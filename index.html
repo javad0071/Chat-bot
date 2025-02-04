@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چت آنلاین</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        #chat {
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #message {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>چت آنلاین</h1>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="پیام خود را وارد کنید...">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // دریافت پیام‌ها از سرور
+        socket.on('message', function(msg) {
+            const chat = document.getElementById('chat');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = msg;
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight; // اسکرول به پایین
+        });
+
+        // ارسال پیام به سرور
+        const messageInput = document.getElementById('message');
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const message = messageInput.value;
+                socket.send(message);
+                messageInput.value = ''; // پاک کردن فیلد ورودی
+            }
+        });
+    </script>
+</body>
+</html>
